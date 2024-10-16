@@ -7,7 +7,8 @@ public class Main {
         // This creates an array called transactions. Basically a list that holds Transaction Objects
         List<Transaction> transactions = new ArrayList<>();
 
-        // Step 1: Load transactions from the CSV file
+        // Step 1: Load transactions from the CSV file.
+        // We want to Try Catch anytime we're dealing with files in case of error.
         try (FileReader frOne = new FileReader("transaction.csv");
              BufferedReader brOne = new BufferedReader(frOne)) {
 
@@ -49,7 +50,7 @@ public class Main {
             System.out.println("X) Exit");
             System.out.print("Choose an option: ");
             String option = scanner.nextLine().toUpperCase();
-            // place holder switch options
+            // placeholder switch options
             switch (option) {
                 case "D":
                     addDeposit();  // This will be implemented soon
@@ -72,8 +73,38 @@ public class Main {
 
     // Methods that we'll call on.
     public static void addDeposit() {
-        System.out.println("Adding a deposit...");
+        Scanner scanner = new Scanner(System.in);
+
+        // Prompt the user for deposit details
+        System.out.println("Enter deposit date (YYYY-MM-DD): ");
+        String date = scanner.nextLine();
+
+        System.out.println("Enter deposit time (HH:MM:SS): ");
+        String time = scanner.nextLine();
+
+        System.out.println("Enter deposit description: ");
+        String description = scanner.nextLine();
+
+        System.out.println("Enter deposit vendor: ");
+        String vendor = scanner.nextLine();
+
+        System.out.println("Enter deposit amount: ");
+        double amount = Double.parseDouble(scanner.nextLine());
+
+        // Create a new Transaction object for the deposit
+        Transaction newDeposit = new Transaction(date, time, description, vendor, amount);
+        // We're dealing with files again (writing to one) so try catch is needed.
+        try (FileWriter fwDeposit = new FileWriter("transaction.csv", true);
+             BufferedWriter bwDeposit = new BufferedWriter(fwDeposit);
+             PrintWriter out = new PrintWriter(bwDeposit)) {
+            // Write the new transaction to the CSV file in the same format
+            out.println(date + "|" + time + "|" + description + "|" + vendor + "|" + amount);
+            System.out.println("Deposit added and saved to file: " + newDeposit);
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving the deposit: " + e.getMessage());
+        }
     }
+
 
     public static void makePayment() {
         System.out.println("Making a payment...");
