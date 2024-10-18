@@ -102,6 +102,7 @@ public class Main {
             System.out.println("An error occurred while saving the deposit: " + e.getMessage());
         }
     }
+
     // Next method is for  make payments.
     public static void makePayment() {
         Scanner scanner = new Scanner(System.in);
@@ -133,20 +134,56 @@ public class Main {
             System.out.println("An error occurred while saving the payment: " + e.getMessage());
         }
     }
-        //displaying the ledger is different from the previous two.
+
+    //displaying the ledger is different from the previous two.
     public static void displayLedger() {
+        Scanner scanner = new Scanner(System.in);
+
         // We need access to the transactions list
-        List<Transaction> transactions = loadTransactions();  // Load the transactions from the CSV
+        List<Transaction> transactions = loadTransactions();  // A helper method to load the transactions from the CSV
 
-        System.out.println("Displaying all ledger entries (newest first):");
+        System.out.println("LEDGER OPTIONS:");
+        System.out.println("A) All entries");
+        System.out.println("D) Deposits only");
+        System.out.println("P) Payments only");
+        System.out.println("R) Reports");
+        System.out.println("Choose an option: ");
+        String option = scanner.nextLine().toUpperCase();
 
-        // Loop through the list in reverse order to show the newest entries first
-        // i is the size of our list -1 due to the count starting at 0
-        // we go i-- each time to go to the next line. We get i print it and loop until done.
+        switch (option) {
+            case "A":
+                // Show all entries
+                System.out.println("Displaying all ledger entries (newest first):");
+                for (int i = transactions.size() - 1; i >= 0; i--) {
+                    System.out.println(transactions.get(i));
+                }
+                break;
 
-        for (int i = transactions.size() - 1; i >= 0; i--) {
-            Transaction transaction = transactions.get(i);
-            System.out.println(transaction);
+            case "D":
+                // Show only deposits (amounts greater than 0)
+                System.out.println("Displaying deposits only (newest first):");
+                for (int i = transactions.size() - 1; i >= 0; i--) {
+                    if (transactions.get(i).getAmount() > 0) {
+                        System.out.println(transactions.get(i));
+                    }
+                }
+                break;
+
+            case "P":
+                // Show only payments (amounts less than 0)
+                System.out.println("Displaying payments only (newest first):");
+                for (int i = transactions.size() - 1; i >= 0; i--) {
+                    if (transactions.get(i).getAmount() < 0) {
+                        System.out.println(transactions.get(i));
+                    }
+                }
+                break;
+                // Runs the reportMenu method below.
+            case "R": reportMenu();
+            break;
+
+            default:
+                System.out.println("Invalid option. Please try again.");
         }
     }
 
@@ -186,4 +223,44 @@ public class Main {
 
         return transactions;
     }
+
+    public static void reportMenu() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("REPORT OPTIONS:");
+        System.out.println("R1) Month to Date");
+        System.out.println("R2) Previous Month");
+        System.out.println("R3) Year to Date");
+        System.out.println("R4) Previous Year");
+        System.out.println("R5) Search by Vendor");
+        System.out.println("R0) Back to Home");
+        System.out.print("Choose a report option: ");
+        String option = scanner.nextLine().toUpperCase();
+    }
 }
+
+        /*
+        switch (option) {
+            case "R1":
+                generateMonthToDateReport();
+                break;
+            case "R2":
+                generatePreviousMonthReport();
+                break;
+            case "R3":
+                generateYearToDateReport();
+                break;
+            case "R4":
+                generatePreviousYearReport();
+                break;
+            case "R5":
+                searchByVendor();
+                break;
+            case "R0":
+                System.out.println("Returning to Home.");
+                break;
+            default:
+                System.out.println("Invalid option. Please try again.");
+        }
+    }
+
